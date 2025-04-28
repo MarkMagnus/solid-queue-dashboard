@@ -40,20 +40,35 @@ module SolidQueueDashboard
           .where.not(id: running)
       end
 
+      def retried_jobs
+        sql = """
+            select
+              t.id,
+              t.queue_name,
+              t.class_name,
+              t.arguments,
+              t.priority,
+              t.active_job_id,
+              t.scheduled_at,
+              t.finished_at,
+              t.concurrency_key,
+              t.created_at,
+              t.updated_at
+            from (
+                select row_number() over (partition by active_job_id order by id) as row, *
+                from solid_queue_jobs
+                where finished_at is not null and finished_at <= ?
+            ) as t where t.row > 1
+        """
+        SolidQueue::Job.find_by_sql([sql, Time.current])
+      end
+
+      def retried_job_ids
+        retried_jobs.map(&:id)
+      end
+
       def retried
-        where(finished_at: ..Time.current)
-          .where.not(id: failed)
-          .where(
-            active_job_id: SolidQueue::Job
-              .select(:active_job_id)
-              .group(:active_job_id)
-              .having("COUNT(*) > 1")
-          )
-          .where.not(
-            id: SolidQueue::Job
-              .select("MAX(id)")
-              .group(:active_job_id)
-          )
+        where(id: retried_job_ids)
       end
 
       def failure_rate
