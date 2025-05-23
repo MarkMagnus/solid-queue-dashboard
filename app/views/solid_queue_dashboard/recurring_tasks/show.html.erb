@@ -125,7 +125,13 @@
         <li>
           <span data-date><%= run_time.strftime("%Y-%m-%d %H:%M:%S %Z") %></span>
           <span class="text-muted-foreground">
-            in <%= distance_of_time_in_words(Time.current, run_time) %>
+            in <%=
+              if run_time.is_a? EtOrbi::EoTime
+                distance_of_time_in_words(Time.current, run_time.send(:to_time))
+              else
+                distance_of_time_in_words(Time.current, run_time)
+              end
+            %>
           </span>
         </li>
       <% end %>
