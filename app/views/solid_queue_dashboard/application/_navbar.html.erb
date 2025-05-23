@@ -43,13 +43,26 @@
   </div>
 
   <div class="ml-auto flex gap-4">
+    <%= hidden_field_tag :auto_refresh_period, params[:auto_refresh_period] if params[:auto_refresh_period].present? %>
     <% if current_page?(controller: 'dashboard', action: 'index') %>
       <%= form_with url: root_path, method: :get, class: "flex gap-1.5 items-center" do |form| %>
-        <%= form.hidden_field :chart_period %>
+        <%= form.hidden_field(:chart_period, value: params[:chart_period]) if params[:chart_period].present? %>
 
         <%= icon_refresh_cw class: "size-4 text-muted-foreground" %>
-        <%= form.select :auto_refresh_period,
-          [["Auto-Refresh Off", "off"], ["15 seconds", "15"], ["30 seconds", "30"], ["1 minute", "60"], ["3 minutes", "180"], ["5 minutes", "300"], ["10 minutes", "600"], ["15 minutes", "900"], ["30 minutes", "1800"], ["1 hour", "3600"]],
+        <%=
+          form.select :auto_refresh_period,
+          [
+            ["Auto-Refresh Off", "off"],
+            ["15 seconds", "15"],
+            ["30 seconds", "30"],
+            ["1 minute", "60"],
+            ["3 minutes", "180"],
+            ["5 minutes", "300"],
+            ["10 minutes", "600"],
+            ["15 minutes", "900"],
+            ["30 minutes", "1800"],
+            ["1 hour", "3600"]
+          ],
           { selected: params[:auto_refresh_period].presence || "off" },
           class: "select w-40",
           data: { auto_submit: true }

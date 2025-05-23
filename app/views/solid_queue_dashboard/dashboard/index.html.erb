@@ -1,8 +1,20 @@
 <div class="card card-content p-6 relative">
+
   <%= form_with url: root_path, method: :get, class: "absolute top-6 right-6" do |form| %>
-    <%= form.hidden_field :auto_refresh_period %>
-    <%= form.select :chart_period,
-      [["15 minutes", "15m"], ["30 minutes", "30m"], ["1 hour", "1h"], ["3 hours", "3h"], ["6 hours", "6h"], ["12 hours", "12h"], ["1 day", "1d"], ["3 days", "3d"], ["1 week", "1w"]],
+    <%= form.hidden_field(:auto_refresh_period, value: params[:auto_refresh_period]) if params[:auto_refresh_period].present? %>
+    <%=
+      form.select :chart_period,
+      [
+        ["15 minutes", "15m"],
+        ["30 minutes", "30m"],
+        ["1 hour", "1h"],
+        ["3 hours", "3h"],
+        ["6 hours", "6h"],
+        ["12 hours", "12h"],
+        ["1 day", "1d"],
+        ["3 days", "3d"],
+        ["1 week", "1w"]
+      ],
       { selected: params[:chart_period].presence || "30m" },
       class: "select",
       data: { auto_submit: true }
