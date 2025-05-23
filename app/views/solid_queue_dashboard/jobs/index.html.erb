@@ -27,10 +27,13 @@
 
   <% if @pagination[:total_pages] > 1 %>
     <div class="card-footer pt-6 border-t flex justify-between">
-      <%= render partial: 'solid_queue_dashboard/application/pagination', locals: {
+      <%= render partial: 'pagination', locals: {
         current_page: @pagination[:current_page],
         total_pages: @pagination[:total_pages],
-        per_page: @pagination[:per_page]
+        per_page: @pagination[:per_page],
+        status: params[:status],
+        class_name: params[:class_name],
+        queue_name: params[:queue_name],
       } %>
 
       <div class="flex items-center gap-2">
